@@ -22,7 +22,13 @@ const todoReducer = (state = [] , action) => {
         }
 
         case doTodoType : {
-            console.log(action.id)
+            let newState =  [...state]
+            newState.forEach(todo  => {
+                if(todo.id == action.id) {
+                    todo.isCompleted = !todo.isCompleted
+                }
+            })
+             
         }
 
         case deleteTodoType : {
@@ -35,29 +41,28 @@ const todoReducer = (state = [] , action) => {
 }
 const store = Redux.createStore(todoReducer);
 
-const VerificationInput = () => {
+const createTodo = () => {
     let todoTitle = todoInput.value
     store.dispatch(addCreatorAction(todoTitle))
     todoInput.value = ''
-    console.log(generateTodoElement(todoTitle))
     todoInput.focus()
 };
 
 addTodoBtn.addEventListener('click' , () => {
-    todoInput.value !=''  && VerificationInput()
+    todoInput.value !=''  && createTodo()
 });
 window.addEventListener('keydown' , (event) => {
-    event.key == 'Enter' && todoInput.value != '' && VerificationInput()
+    event.key == 'Enter' && todoInput.value != '' && createTodo()
 });
 
-const completHandler = (id) => {
+const doTodoHandler = (id) => {
     store.dispatch(doCreatorAction(id))
 }
 
-const generateTodoElement = (id , title) => {
+const generateTodoElement = (id , title, isCompleted) => {
     return `
-        <div class="todoItem "
-            onClick=completHandler(${id})
+        <div class="todoItem  ${isCompleted && " completed" }"
+            onClick=doTodoHandler(${id})
         >
             <span class="titleTodo">${title}</span>
             <span id="deleteTodoBtn" class="material-symbols-outlined">
@@ -72,9 +77,13 @@ const generateTodoElement = (id , title) => {
 
 // -------------
 const rednderUI = () => {
-    todoItemContainer.innerHTML = ''
     let todos = store.getState()
-    todos.map(todo => todoItemContainer.insertAdjacentHTML('beforeend' , generateTodoElement(todo.id , todo.title)))
+    todoItemContainer.innerHTML = ''
+    todos.map(todo => 
+        todoItemContainer.insertAdjacentHTML(
+            'beforeend' ,
+             generateTodoElement(todo.id , todo.title, todo.isCompleted)
+    ));
 }
 
 rednderUI()
@@ -84,4 +93,4 @@ window.addEventListener('load', () => {
     todoInput.focus()
 })
 
-window.completHandler = completHandler
+window.doTodoHandler = doTodoHandler

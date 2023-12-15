@@ -55,7 +55,7 @@
     border: #ccc;
     background-color: rgba(0, 255, 255, 0.212);
 }
-.todoItem.completed{
+.todoItemContainer .completed{
     border: solid 2px rgb(68, 205, 68);
     background-color: rgba(42,101,42);
     color: #fff;
